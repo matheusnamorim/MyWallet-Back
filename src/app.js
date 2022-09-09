@@ -62,6 +62,13 @@ server.post('/sign-up', async (req, res) => {
             res.status(422).send(message);
             return;
         }
+        
+        const userList = await db.collection('users').find().toArray();
+        if((userList.find(value => value.name === name || value.email === email))){
+            res.sendStatus(409);
+            return;
+        }
+
         const passwordHash = bcrypt.hashSync(password, 10);
         await db.collection('users').insertOne({
             name,
