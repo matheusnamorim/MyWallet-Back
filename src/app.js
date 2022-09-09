@@ -54,6 +54,7 @@ server.post('/sign-in', async (req, res) => {
 });
 
 server.post('/sign-up', async (req, res) => {
+    const { name, email, password } = req.body;
     try {
         const validation = signUpSchema.validate(req.body, { abortEarly: false });
         if(validation.error){
@@ -61,7 +62,14 @@ server.post('/sign-up', async (req, res) => {
             res.status(422).send(message);
             return;
         }
-        res.send(req.body);
+        const passwordHash = bcrypt.hashSync(password, 10);
+        await db.collection('users').insertOne({
+            name,
+            email,
+            password: passwordHash
+        });
+        res.sendStatus(201);
+        return;
     } catch (error) {
         res.status(500).send(error.message);
         return;
