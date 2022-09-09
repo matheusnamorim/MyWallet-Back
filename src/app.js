@@ -24,7 +24,7 @@ const userSchema = joi.object({
 const signUpSchema = joi.object({
     name: joi.string().trim().required(),
     email: joi.string().email().required(),
-
+    password: joi.string().trim().required()
 });
 
 server.get('/sign-in', async (req, res) => {
@@ -55,7 +55,12 @@ server.post('/sign-in', async (req, res) => {
 
 server.post('/sign-up', async (req, res) => {
     try {
-        console.log(req.body);
+        const validation = signUpSchema.validate(req.body, { abortEarly: false });
+        if(validation.error){
+            const message = validation.error.details.map(value => value.message);
+            res.status(422).send(message);
+            return;
+        }
         res.send(req.body);
     } catch (error) {
         res.status(500).send(error.message);
