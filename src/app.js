@@ -18,7 +18,8 @@ mongoClient.connect(() => {
 });
 
 const userSchema = joi.object({
-    email: joi.string().email().required()
+    email: joi.string().email().required(),
+    password: joi.string().trim().required()
 });
 
 const signUpSchema = joi.object({
@@ -38,13 +39,22 @@ server.get('/sign-in', async (req, res) => {
     
 });
 
-
 server.post('/sign-in', async (req, res) => {
+    const { email, password } = req.body;
     try {
-        const validation = userSchema.validate(req.body);
+        const validation = userSchema.validate(req.body, { abortEarly: false });
         if(validation.error){
             const message = validation.error.details.map(value => value.message);
             res.status(422).send(message);
+            return;
+        }
+        const usersList = await db.collection('users').find().toArray();
+        const user = usersList.find(value => value.email === email); 
+        if(user !== undefined && bcrypt.compareSync(password, user.password)){
+            res.sendStatus(200);
+            return;
+        }else{
+            res.sendStatus(404);
             return;
         }
     } catch (error) {
@@ -62,7 +72,7 @@ server.post('/sign-up', async (req, res) => {
             res.status(422).send(message);
             return;
         }
-        
+
         const userList = await db.collection('users').find().toArray();
         if((userList.find(value => value.name === name || value.email === email))){
             res.sendStatus(409);
