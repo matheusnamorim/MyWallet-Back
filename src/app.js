@@ -11,6 +11,7 @@ dotenv.config();
 const server = express();
 server.use(express.json());
 server.use(cors());
+
 server.use(usersRouter);
 
 server.listen(5000, () => console.log('Listening on port 5000'));

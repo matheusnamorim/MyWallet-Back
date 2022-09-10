@@ -11,6 +11,10 @@ const login = async (req, res) => {
         const user = usersList.find(value => value.email === email); 
         if(user !== undefined && bcrypt.compareSync(password, user.password)){
             const token = uuid();
+            db.collection('sessions').insertOne({
+                token,
+                userId: user._id
+            });
             res.status(200).send(token);
             return;
         }else{
@@ -46,4 +50,20 @@ const register =  async (req, res) => {
     }
 }
 
-export {login, register};
+const info = async(req, res) => {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    
+    try {
+        const session = await db.collection('sessions').findOne({token});
+        if(!session) return res.sendStatus(401);
+
+        const user = await db.collection('users').findOne({_id: session.userId });
+        
+        delete user.password;
+        return res.status(200).send(user);
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
+}
+
+export {login, register, info};
