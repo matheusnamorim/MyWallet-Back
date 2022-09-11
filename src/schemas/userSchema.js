@@ -11,4 +11,9 @@ const signUpSchema = joi.object({
     password: joi.string().trim().required()
 });
 
-export { userSchema, signUpSchema };
+const releasesSchema = joi.object({
+    value: joi.string().trim().required(),
+    description: joi.string().trim().required(),
+    type: joi.string().valid('entry', 'exit').required()
+});
+export { userSchema, signUpSchema, releasesSchema };
