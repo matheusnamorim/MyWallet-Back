@@ -66,7 +66,7 @@ const registerReleases = async (req, res) => {
             value,
             description,
             type,
-            date: dayjs().format('MM/DD')
+            date: dayjs().format('DD/MM')
         });
         return res.sendStatus(201);
     } catch (error) {
