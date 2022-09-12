@@ -2,6 +2,7 @@ import mongo from '../db/db.js';
 import bcrypt from 'bcrypt';
 import {v4 as uuid} from 'uuid';
 import dayjs from 'dayjs';
+import { ObjectId } from 'bson';
 
 let db = await mongo();
 
@@ -85,4 +86,14 @@ const listReleases = async (req, res) => {
     }
 };
 
-export {login, register, infos, registerReleases, listReleases};
+const deleteReleases = async (req, res) => {
+    const { id } = req.params;
+    try {
+        await db.collection('releases').deleteOne({_id: ObjectId(id)});
+        return res.sendStatus(200);
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
+};
+
+export {login, register, infos, registerReleases, listReleases, deleteReleases};
