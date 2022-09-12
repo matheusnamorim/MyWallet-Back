@@ -96,4 +96,28 @@ const deleteReleases = async (req, res) => {
     }
 };
 
-export {login, register, infos, registerReleases, listReleases, deleteReleases};
+
+const findOneRegister = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const register = await db.collection('releases').find({_id: ObjectId(id)}).toArray();
+        return res.status(200).send(register);
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
+}
+
+const updateRegister = async (req, res) => {
+    const {value, description} = req.body;
+    const { id } = req.params;
+    try {
+        await db.collection('releases').updateOne({_id: new ObjectId(id)}, {$set: {
+            value: value,
+            description: description
+        }});
+        return res.sendStatus(200);
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
+}
+export {login, register, infos, registerReleases, listReleases, deleteReleases, findOneRegister, updateRegister};

@@ -13,7 +13,7 @@ const signUpSchema = joi.object({
 
 const releasesSchema = joi.object({
     value: joi.string().trim().required(),
-    description: joi.string().trim().required(),
+    description: joi.string().trim().max(25).required(),
     type: joi.string().valid('entry', 'exit').required()
 });
 export { userSchema, signUpSchema, releasesSchema };
