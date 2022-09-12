@@ -60,9 +60,10 @@ const infos = (req, res) => {
 
 const registerReleases = async (req, res) => {
     const { value, description, type } = req.body;
-    
+    const {user} = res.locals;
     try {
         await db.collection('releases').insertOne({
+            userId: user._id,
             value,
             description,
             type,
@@ -75,8 +76,9 @@ const registerReleases = async (req, res) => {
 };
 
 const listReleases = async (req, res) => {
+    const { user } = res.locals;
     try {
-        const list = await db.collection('releases').find().toArray();
+        const list = await db.collection('releases').find({userId: user._id}).toArray();
         return res.status(200).send(list);
     } catch (error) {
         return res.status(500).send(error.message);

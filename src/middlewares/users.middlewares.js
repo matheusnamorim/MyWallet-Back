@@ -39,11 +39,13 @@ async function validateToken(req, res, next){
 }
 
 function validateReleases(req, res, next){
+    const { user } = res.locals;
     const validation = releasesSchema.validate(req.body, {abortEarly: false});
     if(validation.error){
         const message = validation.error.details.map(value => value.message);
         return res.status(422).send(message);
     }
+    res.locals.user = user;
     next();
 }
 
