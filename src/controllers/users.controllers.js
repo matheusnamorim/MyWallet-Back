@@ -20,7 +20,7 @@ const login = async (req, res) => {
             res.status(200).send(token);
             return;
         }else{
-            return res.Status(404);
+            return res.sendStatus(404);
         }
     } catch (error) {
         res.status(500).send(error.message);
