@@ -15,4 +15,4 @@ server.use(cors());
 server.use(usersRouter);
 //
 
-server.listen(process.env.PORT || 3000, () => console.log(`Listening on port ${process.env.PORT}`));
+server.listen(process.env.PORT || 5000, () => console.log(`Listening on port ${process.env.PORT}`));

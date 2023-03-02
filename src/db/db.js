@@ -4,12 +4,6 @@ dotenv.config();
 
 const mongoClient = new MongoClient(process.env.MONGO_URI);
 
-// let db;
-
-// mongoClient.connect(() => {
-//     db = mongoClient.db('MyWallet');
-// });
-
 export default async function mongo () {
     let connect;
 
